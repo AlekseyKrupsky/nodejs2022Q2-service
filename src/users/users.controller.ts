@@ -12,10 +12,8 @@ import {
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { User } from './interfaces/user.interface';
-import { createHash, randomUUID } from 'crypto';
 import { UpdatePasswordDto } from './dto/update-user.dto';
-import { FindOneParams } from './interfaces/findOneParams';
-import { UpdateParams } from './interfaces/updateParams';
+import { FindOneParams } from '../interfaces/findOneParams';
 import { PasswordInterceptor } from './password.interceptor';
 
 @Controller('user')
@@ -39,13 +37,16 @@ export class UsersController {
   }
 
   @Put(':id')
-  update(@Body() updatePasswordDto: UpdatePasswordDto, @Param() params: UpdateParams): User {
+  update(
+    @Body() updatePasswordDto: UpdatePasswordDto,
+    @Param() params: FindOneParams,
+  ): User {
     return this.usersService.update(params.id, updatePasswordDto);
   }
 
   @Delete(':id')
   @HttpCode(204)
-  delete(@Param() params: UpdateParams): void {
-    this.usersService.delete(params.id);
+  remove(@Param() params: FindOneParams): void {
+    this.usersService.remove(params.id);
   }
 }

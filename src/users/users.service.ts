@@ -3,6 +3,7 @@ import { User } from './interfaces/user.interface';
 import { UpdatePasswordDto } from './dto/update-user.dto';
 import { createHash, randomUUID } from 'crypto';
 import { CreateUserDto } from './dto/create-user.dto';
+import { HttpStatusMessages } from '../enums/http-status-messages';
 
 const DEFAULT_USER_ENTITY_VERSION = 1;
 
@@ -37,7 +38,7 @@ export class UsersService {
             return this.users[id];
         }
 
-        throw new HttpException('Not Found', HttpStatus.NOT_FOUND);
+        throw new HttpException(HttpStatusMessages.NOT_FOUND, HttpStatus.NOT_FOUND);
     }
 
     update(id: string, updatePasswordDto: UpdatePasswordDto): User {
@@ -51,20 +52,18 @@ export class UsersService {
                 user.version++;
                 user.updatedAt = Math.floor(Date.now() / 1000);
 
-                this.users[id] = user;
-
                 return user;
             }
 
-            throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
+            throw new HttpException(HttpStatusMessages.FORBIDDEN, HttpStatus.FORBIDDEN);
         }
 
-        throw new HttpException('Not Found', HttpStatus.NOT_FOUND);
+        throw new HttpException(HttpStatusMessages.NOT_FOUND, HttpStatus.NOT_FOUND);
     }
 
-    delete(id: string): void {
+    remove(id: string): void {
         if (this.users[id] === undefined) {
-            throw new HttpException('Not Found', HttpStatus.NOT_FOUND);
+            throw new HttpException(HttpStatusMessages.NOT_FOUND, HttpStatus.NOT_FOUND);
         }
 
         delete this.users[id];
