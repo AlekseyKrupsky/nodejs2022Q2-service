@@ -1,6 +1,7 @@
-import { IsNumberString, IsUUID } from 'class-validator';
+import { IsNotEmpty, IsUUID} from 'class-validator';
 
-export class FindOneParams {
+export class UpdateParams {
     @IsUUID()
+    @IsNotEmpty()
     id: string;
 }
