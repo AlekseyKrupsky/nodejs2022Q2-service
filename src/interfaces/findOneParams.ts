@@ -1,4 +1,4 @@
-import { IsNumberString, IsUUID } from 'class-validator';
+import { IsUUID } from 'class-validator';
 
 export class FindOneParams {
     @IsUUID()
