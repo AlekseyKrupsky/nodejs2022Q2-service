@@ -1,23 +1,38 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { User } from './interfaces/user.interface';
-import { UpdatePasswordDto } from './interfaces/updateUserDto';
-import { createHash } from 'crypto';
+import { UpdatePasswordDto } from './dto/update-user.dto';
+import { createHash, randomUUID } from 'crypto';
+import { CreateUserDto } from './dto/create-user.dto';
+
+const DEFAULT_USER_ENTITY_VERSION = 1;
 
 @Injectable()
 export class UsersService {
     private readonly users: { [key: string]: User } = {};
 
-    create(user: User): User {
+    create(createUserDto: CreateUserDto): User {
+        const createdDate: number = Math.floor(Date.now() / 1000);
+        const passwordHash: string = this.getPasswordHexHash(createUserDto.password);
+
+        const user: User = {
+            id: randomUUID(),
+            login: createUserDto.login,
+            password: passwordHash,
+            version: DEFAULT_USER_ENTITY_VERSION,
+            createdAt: createdDate,
+            updatedAt: createdDate,
+        };
+
         this.users[user.id] = user;
 
         return user;
     }
 
-    getAll(): User[] {
+    findAll(): User[] {
         return Object.values(this.users);
     }
 
-    getOne(id: string): User {
+    findOne(id: string): User {
         if (this.users[id] !== undefined) {
             return this.users[id];
         }
@@ -27,19 +42,12 @@ export class UsersService {
 
     update(id: string, updatePasswordDto: UpdatePasswordDto): User {
         if (this.users[id] !== undefined) {
-            const user: User = this.getOne(id);
-
-            const hash = createHash('sha256');
-            const oldPasswordHash: string = hash
-                .update(updatePasswordDto.oldPassword)
-                .digest('hex');
+            const user: User = this.findOne(id);
+            const oldPasswordHash: string = this.getPasswordHexHash(updatePasswordDto.oldPassword);
 
             if (oldPasswordHash === user.password) {
-                const hash = createHash('sha256');
+                user.password = this.getPasswordHexHash(updatePasswordDto.newPassword);
 
-                user.password = hash
-                    .update(updatePasswordDto.newPassword)
-                    .digest('hex');
                 user.version++;
                 user.updatedAt = Math.floor(Date.now() / 1000);
 
@@ -60,5 +68,12 @@ export class UsersService {
         }
 
         delete this.users[id];
+    }
+
+    getPasswordHexHash(password: string): string {
+        const hash = createHash('sha256');
+        return hash
+            .update(password)
+            .digest('hex');
     }
 }

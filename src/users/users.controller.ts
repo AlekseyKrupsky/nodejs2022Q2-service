@@ -6,18 +6,17 @@ import {
   Post,
   Put,
   UseInterceptors,
-  Delete, HttpCode
+  Delete,
+  HttpCode
 } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { CreateUserDto } from './interfaces/createUserDto';
+import { CreateUserDto } from './dto/create-user.dto';
 import { User } from './interfaces/user.interface';
 import { createHash, randomUUID } from 'crypto';
-import { UpdatePasswordDto } from './interfaces/updateUserDto';
+import { UpdatePasswordDto } from './dto/update-user.dto';
 import { FindOneParams } from './interfaces/findOneParams';
 import { UpdateParams } from './interfaces/updateParams';
 import { PasswordInterceptor } from './password.interceptor';
-
-const DEFAULT_USER_ENTITY_VERSION = 1;
 
 @Controller('user')
 @UseInterceptors(new PasswordInterceptor())
@@ -26,32 +25,17 @@ export class UsersController {
 
   @Post()
   async create(@Body() createUserDto: CreateUserDto) {
-    const createdDate: number = Math.floor(Date.now() / 1000);
-    const hash = createHash('sha256');
-    const passwordHash: string = hash
-      .update(createUserDto.password)
-      .digest('hex');
-
-    const user: User = {
-      id: randomUUID(),
-      login: createUserDto.login,
-      password: passwordHash,
-      version: DEFAULT_USER_ENTITY_VERSION,
-      createdAt: createdDate,
-      updatedAt: createdDate,
-    };
-
-    return this.usersService.create(user);
+    return this.usersService.create(createUserDto);
   }
 
   @Get()
   getAll(): User[] {
-    return this.usersService.getAll();
+    return this.usersService.findAll();
   }
 
   @Get(':id')
   getOne(@Param() params: FindOneParams): User {
-    return this.usersService.getOne(params.id);
+    return this.usersService.findOne(params.id);
   }
 
   @Put(':id')
