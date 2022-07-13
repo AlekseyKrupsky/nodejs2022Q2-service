@@ -8,6 +8,7 @@ import {EntityTypes} from "../enums/entity-types";
 import {EntityService} from "../classes/entity.service";
 import {validateRelatedEntity} from "../classes/helper";
 import {FavoritesService} from "../favorites/favorites.service";
+import {Track} from "../tracks/interfaces/track.interface";
 
 @Injectable()
 export class AlbumsService extends EntityService<Album> {
@@ -45,6 +46,16 @@ export class AlbumsService extends EntityService<Album> {
     try {
       this.favoritesService.remove(this.entityType, id);
     } catch {}
+
+    const tracks: Track[] = this.inMemoryDB.selectAll(EntityTypes.TRACKS);
+
+    console.log(tracks);
+
+    for (const trackId in tracks) {
+      if (tracks[trackId].albumId === id) {
+        tracks[trackId].albumId = null;
+      }
+    }
 
     super.remove(id);
   }

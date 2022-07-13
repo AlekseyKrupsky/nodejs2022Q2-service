@@ -7,6 +7,8 @@ import { InMemoryDB } from "../database/in-memory-db";
 import { EntityTypes } from "../enums/entity-types";
 import { EntityService } from "../classes/entity.service";
 import { FavoritesService } from "../favorites/favorites.service";
+import {Album} from "../albums/interfaces/album.interface";
+import {Track} from "../tracks/interfaces/track.interface";
 
 @Injectable()
 export class ArtistsService extends EntityService<Artist> {
@@ -39,6 +41,22 @@ export class ArtistsService extends EntityService<Artist> {
     try {
       this.favoritesService.remove(this.entityType, id);
     } catch {}
+
+    const albums: Album[] = this.inMemoryDB.selectAll(EntityTypes.ALBUMS);
+
+    for (const albumId in albums) {
+      if (albums[albumId].artistId === id) {
+        albums[albumId].artistId = null;
+      }
+    }
+
+    const tracks: Track[] = this.inMemoryDB.selectAll(EntityTypes.TRACKS);
+
+    for (const trackId in tracks) {
+      if (tracks[trackId].artistId === id) {
+        tracks[trackId].artistId = null;
+      }
+    }
 
     super.remove(id);
   }

@@ -17,7 +17,7 @@ export class UsersService extends EntityService<User> {
     }
 
     create(createUserDto: CreateUserDto): User {
-        const createdDate: number = Math.floor(Date.now() / 1000);
+        const createdDate: number = +Date.now();
         const passwordHash: string = this.getPasswordHexHash(createUserDto.password);
 
         const user: User = {
@@ -41,7 +41,7 @@ export class UsersService extends EntityService<User> {
             this.inMemoryDB.update(EntityTypes.USERS, id, {
                 password: this.getPasswordHexHash(updatePasswordDto.newPassword),
                 version: user.version + 1,
-                updatedAt: Math.floor(Date.now() / 1000),
+                updatedAt: +Date.now()
             });
 
             return user;

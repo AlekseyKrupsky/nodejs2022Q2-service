@@ -14,7 +14,7 @@ export class TracksService extends EntityService<Track> {
   private readonly favoritesService: FavoritesService;
 
   constructor(inMemoryDB: InMemoryDB, favoritesService: FavoritesService) {
-    super(EntityTypes.ALBUMS, inMemoryDB);
+    super(EntityTypes.TRACKS, inMemoryDB);
     this.favoritesService = favoritesService;
   }
 
