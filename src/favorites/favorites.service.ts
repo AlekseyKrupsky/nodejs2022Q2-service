@@ -1,6 +1,5 @@
 import {HttpException, HttpStatus, Injectable} from "@nestjs/common";
 import { InMemoryDB } from "../database/in-memory-db";
-import { Favorites } from "./interfaces/favorites.interface";
 import { EntityTypes } from "../enums/entity-types";
 import {HttpStatusMessages} from "../enums/http-status-messages";
 
@@ -8,7 +7,7 @@ import {HttpStatusMessages} from "../enums/http-status-messages";
 export class FavoritesService {
     constructor(private readonly inMemoryDB: InMemoryDB) {}
 
-    private readonly favorites: Favorites = {
+    private readonly favorites = {
         artists: [],
         albums: [],
         tracks: [],
@@ -19,20 +18,26 @@ export class FavoritesService {
     }
 
     add(type: `${EntityTypes}`, id: string): void {
-        if (this.inMemoryDB.selectById(type, id) === undefined) {
+        const item = this.inMemoryDB.selectById(type, id);
+
+        if (item === undefined) {
             throw new HttpException(HttpStatusMessages.UNPROCESSABLE_ENTITY, HttpStatus.UNPROCESSABLE_ENTITY);
         }
 
-        this.favorites[type].push(id);
+        this.favorites[type].push(item);
     }
 
-    remove(type: `${EntityTypes}`, id: string): void {
-        const index: number = this.favorites[type].indexOf(id);
+    remove(type: `${EntityTypes}`, id: string): boolean {
+        let deleted = false;
 
-        if (index === -1) {
-            throw new HttpException(HttpStatusMessages.NOT_FOUND, HttpStatus.NOT_FOUND);
-        }
+        this.favorites[type] = this.favorites[type].filter((item) => {
+            if (item.id !== id) {
+                return item;
+            }
 
-        delete this.favorites[type][index];
+            deleted = true;
+        });
+
+        return deleted;
     }
 }

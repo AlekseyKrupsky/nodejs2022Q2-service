@@ -46,9 +46,7 @@ export class TracksService extends EntityService<Track> {
   }
 
   remove(id: string): void {
-    try {
-      this.favoritesService.remove(this.entityType, id);
-    } catch {}
+    this.favoritesService.remove(this.entityType, id);
 
     super.remove(id);
   }

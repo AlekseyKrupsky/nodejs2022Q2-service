@@ -32,13 +32,19 @@ export class FavoritesController {
     @Delete('/:type/:id')
     @HttpCode(204)
     remove(@Param() params: favoritesParams): void {
+        let deleted = false;
+
         if (params.type === 'track') {
-            this.favoritesService.remove(EntityTypes.TRACKS, params.id);
+            deleted = this.favoritesService.remove(EntityTypes.TRACKS, params.id);
         } else if (params.type === 'album') {
-            this.favoritesService.remove(EntityTypes.ALBUMS, params.id);
+            deleted = this.favoritesService.remove(EntityTypes.ALBUMS, params.id);
         } else if (params.type === 'artist') {
-            this.favoritesService.remove(EntityTypes.ARTISTS, params.id);
+            deleted = this.favoritesService.remove(EntityTypes.ARTISTS, params.id);
         } else {
+            throw new HttpException(HttpStatusMessages.NOT_FOUND, HttpStatus.NOT_FOUND);
+        }
+
+        if (!deleted) {
             throw new HttpException(HttpStatusMessages.NOT_FOUND, HttpStatus.NOT_FOUND);
         }
     }

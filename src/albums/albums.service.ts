@@ -43,13 +43,9 @@ export class AlbumsService extends EntityService<Album> {
   }
 
   remove(id: string): void {
-    try {
-      this.favoritesService.remove(this.entityType, id);
-    } catch {}
+    this.favoritesService.remove(this.entityType, id);
 
     const tracks: Track[] = this.inMemoryDB.selectAll(EntityTypes.TRACKS);
-
-    console.log(tracks);
 
     for (const trackId in tracks) {
       if (tracks[trackId].albumId === id) {
