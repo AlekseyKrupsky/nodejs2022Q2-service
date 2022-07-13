@@ -1,13 +1,21 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { CreateArtistDto } from './dto/create-artist.dto';
 import { UpdateArtistDto } from './dto/update-artist.dto';
 import { Artist } from './interfaces/artist.interface';
 import { randomUUID } from 'crypto';
-import { HttpStatusMessages } from '../enums/http-status-messages';
+import { InMemoryDB } from "../database/in-memory-db";
+import { EntityTypes } from "../enums/entity-types";
+import { EntityService } from "../classes/entity.service";
+import { FavoritesService } from "../favorites/favorites.service";
 
 @Injectable()
-export class ArtistsService {
-  private readonly artists: { [key: string]: Artist } = {};
+export class ArtistsService extends EntityService<Artist> {
+  private readonly favoritesService: FavoritesService;
+
+  constructor(inMemoryDB: InMemoryDB, favoritesService: FavoritesService) {
+    super(EntityTypes.ARTISTS, inMemoryDB);
+    this.favoritesService = favoritesService;
+  }
 
   create(createArtistDto: CreateArtistDto) {
     const artist: Artist = {
@@ -16,43 +24,22 @@ export class ArtistsService {
       grammy: createArtistDto.grammy,
     };
 
-    this.artists[artist.id] = artist;
+    return this.inMemoryDB.insert(this.entityType, artist);
+  }
+
+  update(id: string, updateArtistDto: UpdateArtistDto): Artist {
+    const artist = this.findOne(id);
+
+    this.inMemoryDB.update(this.entityType, id, updateArtistDto);
 
     return artist;
   }
 
-  findAll(): Artist[] {
-    return Object.values(this.artists);
-  }
-
-  findOne(id: string): Artist {
-    if (this.artists[id] !== undefined) {
-      return this.artists[id];
-    }
-
-    throw new HttpException(HttpStatusMessages.NOT_FOUND, HttpStatus.NOT_FOUND);
-  }
-
-  update(id: string, updateArtistDto: UpdateArtistDto): Artist {
-    if (this.artists[id] !== undefined) {
-      for (const key in updateArtistDto) {
-        this.artists[id][key] = updateArtistDto[key];
-      }
-
-      return this.artists[id];
-    }
-
-    throw new HttpException(HttpStatusMessages.NOT_FOUND, HttpStatus.NOT_FOUND);
-  }
-
   remove(id: string): void {
-    if (this.artists[id] === undefined) {
-      throw new HttpException(
-        HttpStatusMessages.NOT_FOUND,
-        HttpStatus.NOT_FOUND,
-      );
-    }
+    try {
+      this.favoritesService.remove(this.entityType, id);
+    } catch {}
 
-    delete this.artists[id];
+    super.remove(id);
   }
 }

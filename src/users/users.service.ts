@@ -4,12 +4,17 @@ import { UpdatePasswordDto } from './dto/update-user.dto';
 import { createHash, randomUUID } from 'crypto';
 import { CreateUserDto } from './dto/create-user.dto';
 import { HttpStatusMessages } from '../enums/http-status-messages';
+import { InMemoryDB } from '../database/in-memory-db';
+import { EntityTypes } from '../enums/entity-types';
+import { EntityService } from '../classes/entity.service';
 
 const DEFAULT_USER_ENTITY_VERSION = 1;
 
 @Injectable()
-export class UsersService {
-    private readonly users: { [key: string]: User } = {};
+export class UsersService extends EntityService<User> {
+    constructor(inMemoryDB: InMemoryDB) {
+        super(EntityTypes.USERS, inMemoryDB);
+    }
 
     create(createUserDto: CreateUserDto): User {
         const createdDate: number = Math.floor(Date.now() / 1000);
@@ -24,49 +29,25 @@ export class UsersService {
             updatedAt: createdDate,
         };
 
-        this.users[user.id] = user;
-
-        return user;
-    }
-
-    findAll(): User[] {
-        return Object.values(this.users);
-    }
-
-    findOne(id: string): User {
-        if (this.users[id] !== undefined) {
-            return this.users[id];
-        }
-
-        throw new HttpException(HttpStatusMessages.NOT_FOUND, HttpStatus.NOT_FOUND);
+        return this.inMemoryDB.insert(EntityTypes.USERS, user);
     }
 
     update(id: string, updatePasswordDto: UpdatePasswordDto): User {
-        if (this.users[id] !== undefined) {
-            const user: User = this.findOne(id);
-            const oldPasswordHash: string = this.getPasswordHexHash(updatePasswordDto.oldPassword);
+        const user = this.findOne(id);
 
-            if (oldPasswordHash === user.password) {
-                user.password = this.getPasswordHexHash(updatePasswordDto.newPassword);
+        const oldPasswordHash: string = this.getPasswordHexHash(updatePasswordDto.oldPassword);
 
-                user.version++;
-                user.updatedAt = Math.floor(Date.now() / 1000);
+        if (oldPasswordHash === user.password) {
+            this.inMemoryDB.update(EntityTypes.USERS, id, {
+                password: this.getPasswordHexHash(updatePasswordDto.newPassword),
+                version: user.version + 1,
+                updatedAt: Math.floor(Date.now() / 1000),
+            });
 
-                return user;
-            }
-
-            throw new HttpException(HttpStatusMessages.FORBIDDEN, HttpStatus.FORBIDDEN);
+            return user;
         }
 
-        throw new HttpException(HttpStatusMessages.NOT_FOUND, HttpStatus.NOT_FOUND);
-    }
-
-    remove(id: string): void {
-        if (this.users[id] === undefined) {
-            throw new HttpException(HttpStatusMessages.NOT_FOUND, HttpStatus.NOT_FOUND);
-        }
-
-        delete this.users[id];
+        throw new HttpException(HttpStatusMessages.FORBIDDEN, HttpStatus.FORBIDDEN);
     }
 
     getPasswordHexHash(password: string): string {
