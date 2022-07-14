@@ -1,17 +1,16 @@
 import { Artist } from '../artists/interfaces/artist.interface';
 import { Injectable } from '@nestjs/common';
 import { Album } from '../albums/interfaces/album.interface';
-import { EntityTypes } from '../enums/entity-types';
 import { User } from '../users/interfaces/user.interface';
 import { Track } from '../tracks/interfaces/track.interface';
-
-type EntityTypeUnion = `${EntityTypes}`;
-type EntityUnion = User | Artist | Album | Track;
+import { EntityUnion } from '../types/entity-types';
+import { EntityTypeUnion } from '../types/entity-types';
+import { DatabaseInterface } from '../interfaces/database.interface';
 
 // type UpdateDto = UpdateArtistDto | UpdateAlbumDto;
 
 @Injectable()
-export class InMemoryDB {
+export class InMemoryDB implements DatabaseInterface {
   private readonly users: { [key: string]: User } = {};
   private readonly artists: { [key: string]: Artist } = {};
   private readonly albums: { [key: string]: Album } = {};

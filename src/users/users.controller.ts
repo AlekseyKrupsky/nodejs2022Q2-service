@@ -13,7 +13,7 @@ import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { User } from './interfaces/user.interface';
 import { UpdatePasswordDto } from './dto/update-user.dto';
-import { FindOneParams } from '../interfaces/findOneParams';
+import { FindOneParams } from '../classes/params/findOneParams';
 import { PasswordInterceptor } from './password.interceptor';
 
 @Controller('user')

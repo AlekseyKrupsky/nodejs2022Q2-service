@@ -1,7 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InMemoryDB } from '../database/in-memory-db';
-import { EntityTypes } from '../enums/entity-types';
 import { HttpStatusMessages } from '../enums/http-status-messages';
+import { EntityTypeUnion } from '../types/entity-types';
 
 @Injectable()
 export class FavoritesService {
@@ -17,7 +17,7 @@ export class FavoritesService {
     return this.favorites;
   }
 
-  add(type: `${EntityTypes}`, id: string): void {
+  add(type: EntityTypeUnion, id: string): void {
     const item = this.inMemoryDB.selectById(type, id);
 
     if (item === undefined) {
@@ -30,7 +30,7 @@ export class FavoritesService {
     this.favorites[type].push(item);
   }
 
-  remove(type: `${EntityTypes}`, id: string): boolean {
+  remove(type: EntityTypeUnion, id: string): boolean {
     let deleted = false;
 
     this.favorites[type] = this.favorites[type].filter((item) => {

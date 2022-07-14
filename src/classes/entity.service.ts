@@ -1,13 +1,13 @@
-import { EntityTypes } from '../enums/entity-types';
 import { HttpException, HttpStatus } from '@nestjs/common';
 import { HttpStatusMessages } from '../enums/http-status-messages';
 import { InMemoryDB } from '../database/in-memory-db';
+import { EntityTypeUnion } from '../types/entity-types';
 
 export class EntityService<EntityType> {
-  protected readonly entityType: `${EntityTypes}`;
+  protected readonly entityType: EntityTypeUnion;
   protected readonly inMemoryDB: InMemoryDB;
 
-  constructor(entityType: `${EntityTypes}`, inMemoryDB: InMemoryDB) {
+  constructor(entityType: EntityTypeUnion, inMemoryDB: InMemoryDB) {
     this.entityType = entityType;
     this.inMemoryDB = inMemoryDB;
   }

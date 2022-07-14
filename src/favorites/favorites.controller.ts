@@ -9,7 +9,7 @@ import {
   Post,
 } from '@nestjs/common';
 import { Favorites } from './interfaces/favorites.interface';
-import { favoritesParams } from '../interfaces/favoritesParams';
+import { favoritesParams } from '../classes/params/favoritesParams';
 import { FavoritesService } from './favorites.service';
 import { EntityTypes } from '../enums/entity-types';
 import { HttpStatusMessages } from '../enums/http-status-messages';
