@@ -1,14 +1,14 @@
-import {Injectable} from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { CreateAlbumDto } from './dto/create-album.dto';
 import { UpdateAlbumDto } from './dto/update-album.dto';
 import { Album } from './interfaces/album.interface';
 import { randomUUID } from 'crypto';
-import {InMemoryDB} from "../database/in-memory-db";
-import {EntityTypes} from "../enums/entity-types";
-import {EntityService} from "../classes/entity.service";
-import {validateRelatedEntity} from "../classes/helper";
-import {FavoritesService} from "../favorites/favorites.service";
-import {Track} from "../tracks/interfaces/track.interface";
+import { InMemoryDB } from '../database/in-memory-db';
+import { EntityTypes } from '../enums/entity-types';
+import { EntityService } from '../classes/entity.service';
+import { validateRelatedEntity } from '../classes/helper';
+import { FavoritesService } from '../favorites/favorites.service';
+import { Track } from '../tracks/interfaces/track.interface';
 
 @Injectable()
 export class AlbumsService extends EntityService<Album> {
@@ -35,7 +35,11 @@ export class AlbumsService extends EntityService<Album> {
   update(id: string, updateAlbumDto: UpdateAlbumDto): Album {
     const album = this.findOne(id);
 
-    validateRelatedEntity(updateAlbumDto.artistId, EntityTypes.ARTISTS, this.inMemoryDB);
+    validateRelatedEntity(
+      updateAlbumDto.artistId,
+      EntityTypes.ARTISTS,
+      this.inMemoryDB,
+    );
 
     this.inMemoryDB.update(this.entityType, id, updateAlbumDto);
 

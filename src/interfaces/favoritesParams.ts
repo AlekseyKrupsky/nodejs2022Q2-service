@@ -1,9 +1,9 @@
 import { IsString, IsUUID } from 'class-validator';
 
 export class favoritesParams {
-    @IsUUID()
-    id: string;
+  @IsUUID()
+  id: string;
 
-    @IsString()
-    type: string;
+  @IsString()
+  type: string;
 }

@@ -1,8 +1,17 @@
-import {Controller, Get, Post, Body, Param, Delete, Put, HttpCode} from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Param,
+  Delete,
+  Put,
+  HttpCode,
+} from '@nestjs/common';
 import { TracksService } from './tracks.service';
 import { CreateTrackDto } from './dto/create-track.dto';
 import { UpdateTrackDto } from './dto/update-track.dto';
-import {FindOneParams} from "../interfaces/findOneParams";
+import { FindOneParams } from '../interfaces/findOneParams';
 
 @Controller('track')
 export class TracksController {
@@ -24,7 +33,10 @@ export class TracksController {
   }
 
   @Put(':id')
-  update(@Param() params: FindOneParams, @Body() updateTrackDto: UpdateTrackDto) {
+  update(
+    @Param() params: FindOneParams,
+    @Body() updateTrackDto: UpdateTrackDto,
+  ) {
     return this.tracksService.update(params.id, updateTrackDto);
   }
 

@@ -1,43 +1,46 @@
-import {HttpException, HttpStatus, Injectable} from "@nestjs/common";
-import { InMemoryDB } from "../database/in-memory-db";
-import { EntityTypes } from "../enums/entity-types";
-import {HttpStatusMessages} from "../enums/http-status-messages";
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { InMemoryDB } from '../database/in-memory-db';
+import { EntityTypes } from '../enums/entity-types';
+import { HttpStatusMessages } from '../enums/http-status-messages';
 
 @Injectable()
 export class FavoritesService {
-    constructor(private readonly inMemoryDB: InMemoryDB) {}
+  constructor(private readonly inMemoryDB: InMemoryDB) {}
 
-    private readonly favorites = {
-        artists: [],
-        albums: [],
-        tracks: [],
-    };
+  private readonly favorites = {
+    artists: [],
+    albums: [],
+    tracks: [],
+  };
 
-    findAll() {
-        return this.favorites;
+  findAll() {
+    return this.favorites;
+  }
+
+  add(type: `${EntityTypes}`, id: string): void {
+    const item = this.inMemoryDB.selectById(type, id);
+
+    if (item === undefined) {
+      throw new HttpException(
+        HttpStatusMessages.UNPROCESSABLE_ENTITY,
+        HttpStatus.UNPROCESSABLE_ENTITY,
+      );
     }
 
-    add(type: `${EntityTypes}`, id: string): void {
-        const item = this.inMemoryDB.selectById(type, id);
+    this.favorites[type].push(item);
+  }
 
-        if (item === undefined) {
-            throw new HttpException(HttpStatusMessages.UNPROCESSABLE_ENTITY, HttpStatus.UNPROCESSABLE_ENTITY);
-        }
+  remove(type: `${EntityTypes}`, id: string): boolean {
+    let deleted = false;
 
-        this.favorites[type].push(item);
-    }
+    this.favorites[type] = this.favorites[type].filter((item) => {
+      if (item.id !== id) {
+        return item;
+      }
 
-    remove(type: `${EntityTypes}`, id: string): boolean {
-        let deleted = false;
+      deleted = true;
+    });
 
-        this.favorites[type] = this.favorites[type].filter((item) => {
-            if (item.id !== id) {
-                return item;
-            }
-
-            deleted = true;
-        });
-
-        return deleted;
-    }
+    return deleted;
+  }
 }

@@ -1,13 +1,13 @@
-import {Injectable} from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { CreateTrackDto } from './dto/create-track.dto';
 import { UpdateTrackDto } from './dto/update-track.dto';
-import {Track} from "./interfaces/track.interface";
-import {EntityService} from "../classes/entity.service";
-import {InMemoryDB} from "../database/in-memory-db";
-import {EntityTypes} from "../enums/entity-types";
-import {randomUUID} from "crypto";
-import {validateRelatedEntity} from "../classes/helper";
-import {FavoritesService} from "../favorites/favorites.service";
+import { Track } from './interfaces/track.interface';
+import { EntityService } from '../classes/entity.service';
+import { InMemoryDB } from '../database/in-memory-db';
+import { EntityTypes } from '../enums/entity-types';
+import { randomUUID } from 'crypto';
+import { validateRelatedEntity } from '../classes/helper';
+import { FavoritesService } from '../favorites/favorites.service';
 
 @Injectable()
 export class TracksService extends EntityService<Track> {

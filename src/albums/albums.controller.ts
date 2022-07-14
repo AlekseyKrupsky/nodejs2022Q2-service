@@ -1,4 +1,13 @@
-import { Controller, Get, Post, Body, Param, Delete, HttpCode, Put } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Param,
+  Delete,
+  HttpCode,
+  Put,
+} from '@nestjs/common';
 import { AlbumsService } from './albums.service';
 import { CreateAlbumDto } from './dto/create-album.dto';
 import { UpdateAlbumDto } from './dto/update-album.dto';
@@ -24,7 +33,10 @@ export class AlbumsController {
   }
 
   @Put(':id')
-  update(@Param() params: FindOneParams, @Body() updateAlbumDto: UpdateAlbumDto) {
+  update(
+    @Param() params: FindOneParams,
+    @Body() updateAlbumDto: UpdateAlbumDto,
+  ) {
     return this.albumsService.update(params.id, updateAlbumDto);
   }
 

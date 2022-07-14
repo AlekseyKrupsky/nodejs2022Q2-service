@@ -12,6 +12,6 @@ import { FavoritesModule } from './favorites/favorites.module';
     AlbumsModule,
     UsersModule,
     FavoritesModule,
-  ]
+  ],
 })
 export class AppModule {}

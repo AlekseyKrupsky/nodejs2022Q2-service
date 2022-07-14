@@ -3,12 +3,12 @@ import { CreateArtistDto } from './dto/create-artist.dto';
 import { UpdateArtistDto } from './dto/update-artist.dto';
 import { Artist } from './interfaces/artist.interface';
 import { randomUUID } from 'crypto';
-import { InMemoryDB } from "../database/in-memory-db";
-import { EntityTypes } from "../enums/entity-types";
-import { EntityService } from "../classes/entity.service";
-import { FavoritesService } from "../favorites/favorites.service";
-import {Album} from "../albums/interfaces/album.interface";
-import {Track} from "../tracks/interfaces/track.interface";
+import { InMemoryDB } from '../database/in-memory-db';
+import { EntityTypes } from '../enums/entity-types';
+import { EntityService } from '../classes/entity.service';
+import { FavoritesService } from '../favorites/favorites.service';
+import { Album } from '../albums/interfaces/album.interface';
+import { Track } from '../tracks/interfaces/track.interface';
 
 @Injectable()
 export class ArtistsService extends EntityService<Artist> {

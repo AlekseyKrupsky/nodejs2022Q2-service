@@ -4,7 +4,6 @@ import { ValidationPipe } from '@nestjs/common';
 import * as dotenv from 'dotenv';
 import { cwd } from 'node:process';
 
-
 async function bootstrap() {
   const DEFAULT_PORT_NUMBER = 4000;
 
