@@ -11,27 +11,28 @@
 git clone https://github.com/AlekseyKrupsky/nodejs2022Q2-service
 ```
 
-## Installing NPM modules
+## Create .env
 
+Create .env file from .env.example
+
+## Run app in docker
 ```
-npm install
+docker-compose build
 ```
-
-## Running application
-
-Copy environment variables from .env.example to .env and run application
-
 ```
-npm start
+docker-compose up
 ```
 
-After starting the app on port (4000 as default) you can open
-in your browser OpenAPI documentation by typing http://localhost:4000/doc/.
-For more information about OpenAPI/Swagger please visit https://swagger.io/.
+Use -d flag to run as daemon `docker-compose up -d`
 
-## Testing
 
-After application running open new terminal and enter:
+## Testing inside the container
+
+Connect to container
+
+Use `docker ps` to find nodejs containerId
+
+Run `docker exec -it {containerId} sh`
 
 To run all tests without authorization
 
