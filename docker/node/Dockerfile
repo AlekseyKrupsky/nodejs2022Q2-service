@@ -1,13 +1,18 @@
 FROM node:16-alpine
 
-WORKDIR /usr/src/app
+WORKDIR /usr/src/
 
 COPY ./package*.json ./
 
 RUN npm install --legacy-peer-deps
 
-COPY . .
+WORKDIR /usr/src/app
 
-RUN npm run build
+#RUN touch testfile123
 
-CMD [ "node", "dist/main.js" ]
+#USER node
+
+COPY . /usr/src/app
+
+#CMD [ "npm", "run", "start:dev" ]
+#CMD [ "top" ]
