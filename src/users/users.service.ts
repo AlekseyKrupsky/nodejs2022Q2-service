@@ -7,14 +7,26 @@ import { HttpStatusMessages } from '../enums/http-status-messages';
 import { InMemoryDB } from '../database/in-memory-db';
 import { EntityTypes } from '../enums/entity-types';
 import { EntityService } from '../classes/entity.service';
+import {InjectRepository} from "@nestjs/typeorm";
+import {UserEntity} from "./entities/user.entity";
+import {Repository} from "typeorm";
 
 const DEFAULT_USER_ENTITY_VERSION = 1;
 
 @Injectable()
 export class UsersService extends EntityService<User> {
-  constructor(inMemoryDB: InMemoryDB) {
+  constructor(
+      inMemoryDB: InMemoryDB,
+      // @InjectRepository(UserEntity) private userRepository: Repository<UserEntity>
+  ) {
     super(EntityTypes.USERS, inMemoryDB);
   }
+
+  // async createDB(createUserDto: CreateUserDto) {
+  //   const createUser = this.userRepository.create(createUserDto);
+  //
+  //   return await this.userRepository.save(createUser);
+  // }
 
   create(createUserDto: CreateUserDto): User {
     const createdDate: number = +Date.now();

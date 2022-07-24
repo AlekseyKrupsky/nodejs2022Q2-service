@@ -14,7 +14,7 @@ export default {
     database: process.env.POSTGRES_DB,
     synchronize: false,
     entities: [
-        "src/**/entities/*.entity.{ts,js}",
+        // "src/**/entities/*.entity.{ts,js}",
     ],
     migrations: [
         "src/migrations/*.ts"
