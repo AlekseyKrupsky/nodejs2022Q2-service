@@ -25,6 +25,9 @@ docker-compose up
 
 Use -d flag to run as daemon `docker-compose up -d`
 
+See last line in `run.sh` file
+`exec npm run start:dev` - for development (will rebuild app on changes in code)
+`exec npm run start` - will run app and restart it in case it crashed
 
 ## Testing inside the container
 
