@@ -1,8 +1,8 @@
-import { Column, Entity } from "typeorm";
+import { Column, Entity, PrimaryColumn } from "typeorm";
 
 @Entity('user')
 export class UserEntity {
-    @Column()
+    @PrimaryColumn()
     login: string;
 
     @Column()

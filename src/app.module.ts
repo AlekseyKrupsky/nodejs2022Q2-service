@@ -4,7 +4,7 @@ import { ArtistsModule } from './artists/artists.module';
 import { AlbumsModule } from './albums/albums.module';
 import { UsersModule } from './users/users.module';
 import { FavoritesModule } from './favorites/favorites.module';
-import Ormconfig from './ormconfig';
+import Ormconfig from './../ormconfig';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 @Module({
