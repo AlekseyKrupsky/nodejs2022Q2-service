@@ -14,14 +14,16 @@ export default {
     database: process.env.POSTGRES_DB,
     synchronize: false,
     entities: [
-        "src/**/entities/*.entity.{ts,js}",
+        // "src/**/entities/*.entity.{ts,js}",
     ],
     migrations: [
-        "src/migrations/*.ts"
+        "migrations/*.ts"
     ],
     cli: {
-        entitiesDir: "src/**/entities/*.ts",
-        migrationsDir: "src/migrations"
+        // entitiesDir: "src/**/entities/*.ts",
+        migrationsDir: "migrations"
     },
     migrationsRun: true,
+    autoLoadEntities: true,
+    autoLoadMigrations: true,
 } as DataSourceOptions;

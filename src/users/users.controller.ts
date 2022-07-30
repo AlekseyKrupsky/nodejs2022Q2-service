@@ -23,6 +23,10 @@ export class UsersController {
 
   @Post()
   async create(@Body() createUserDto: CreateUserDto) {
+    // return this.usersService.createDB(createUserDto);
+
+    // return true;
+
     return this.usersService.create(createUserDto);
   }
 
