@@ -7,7 +7,7 @@ export class createArtistsTable1659087790070 implements MigrationInterface {
                                      id     VARCHAR(255) NOT NULL,
                                      name   VARCHAR(255) UNIQUE NOT NULL,
                                      grammy BOOLEAN             NOT NULL,
-    CONSTRAINT table_artists_id_primary_key PRIMARY KEY (id)
+                                     CONSTRAINT table_artists_id_primary_key PRIMARY KEY (id)
                                  )
         `);
     }

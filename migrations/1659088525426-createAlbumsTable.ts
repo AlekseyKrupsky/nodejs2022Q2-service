@@ -9,8 +9,8 @@ export class createAlbumsTable1659088525426 implements MigrationInterface {
                                      name  VARCHAR(255)        NOT NULL,
                                      year   SMALLINT            NOT NULL,
                                      artistId VARCHAR(255)       NOT NULL,
-                                    CONSTRAINT table_albums_id_pk
-    PRIMARY KEY (id)
+                                     CONSTRAINT table_albums_id_pk PRIMARY KEY (id),
+                                     CONSTRAINT artists_id_fk FOREIGN KEY (artistId) REFERENCES public.artists(id)
                                  )
         `);
     }

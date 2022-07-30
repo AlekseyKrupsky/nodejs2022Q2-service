@@ -9,8 +9,7 @@ export class createUsersTable1659078114121 implements MigrationInterface {
                                      version   SMALLINT            NOT NULL DEFAULT 1,
                                      createdAt TIMESTAMP           NOT NULL,
                                      updatedAt TIMESTAMP           NOT NULL,
-                                    CONSTRAINT table_users_login_pk
-    PRIMARY KEY (login)
+                                     CONSTRAINT table_users_login_pk PRIMARY KEY (login)
                                  )
         `);
     }
