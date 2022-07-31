@@ -4,9 +4,9 @@ export class createArtistsTable1659087790070 implements MigrationInterface {
     public async up(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.query(`CREATE TABLE IF NOT EXISTS artists
                                  (
-                                     id     VARCHAR(255) NOT NULL,
-                                     name   VARCHAR(255) UNIQUE NOT NULL,
-                                     grammy BOOLEAN             NOT NULL,
+                                     id UUID DEFAULT uuid_generate_v4(),
+                                     name   VARCHAR(255) NOT NULL,
+                                     grammy BOOLEAN NOT NULL DEFAULT FALSE,
                                      CONSTRAINT table_artists_id_primary_key PRIMARY KEY (id)
                                  )
         `);
