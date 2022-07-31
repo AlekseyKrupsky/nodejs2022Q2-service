@@ -1,34 +1,41 @@
 import { HttpException, HttpStatus } from '@nestjs/common';
 import { HttpStatusMessages } from '../enums/http-status-messages';
-import { InMemoryDB } from '../database/in-memory-db';
 import { EntityTypeUnion } from '../types/entity-types';
 
 export class EntityService<EntityType> {
   protected readonly entityType: EntityTypeUnion;
-  protected readonly inMemoryDB: InMemoryDB;
+  protected readonly repository;
 
-  constructor(entityType: EntityTypeUnion, inMemoryDB: InMemoryDB) {
+  constructor(entityType: EntityTypeUnion, repository) {
     this.entityType = entityType;
-    this.inMemoryDB = inMemoryDB;
+    this.repository = repository;
   }
 
   findAll(): EntityType[] {
-    return Object.values(this.inMemoryDB.selectAll(this.entityType));
+    return this.repository.find();
   }
 
-  findOne(id: string): EntityType {
-    const row = this.inMemoryDB.selectById(this.entityType, id);
+  async findOne(id: string): Promise<EntityType> {
+    const item = await this.repository.findOneBy({ id: id });
 
-    if (row !== undefined) {
-      return row;
+    if (item === null) {
+      throw new HttpException(
+          HttpStatusMessages.NOT_FOUND,
+          HttpStatus.NOT_FOUND,
+      );
     }
 
-    throw new HttpException(HttpStatusMessages.NOT_FOUND, HttpStatus.NOT_FOUND);
+    return item;
   }
 
-  remove(id: string): void {
-    if (this.findOne(id)) {
-      this.inMemoryDB.delete(this.entityType, id);
+  async remove(id: string) {
+    const result = await this.repository.delete(id);
+
+    if (result.affected === 0) {
+      throw new HttpException(
+          HttpStatusMessages.NOT_FOUND,
+          HttpStatus.NOT_FOUND,
+      );
     }
   }
 }

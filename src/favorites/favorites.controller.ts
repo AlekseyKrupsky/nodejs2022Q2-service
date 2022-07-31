@@ -8,7 +8,6 @@ import {
   Param,
   Post,
 } from '@nestjs/common';
-import { Favorites } from './interfaces/favorites.interface';
 import { favoritesParams } from '../classes/params/favoritesParams';
 import { FavoritesService } from './favorites.service';
 import { EntityTypes } from '../enums/entity-types';
@@ -19,18 +18,18 @@ export class FavoritesController {
   constructor(private readonly favoritesService: FavoritesService) {}
 
   @Get()
-  findAll(): Favorites {
+  findAll() {
     return this.favoritesService.findAll();
   }
 
   @Post('/:type/:id')
-  add(@Param() params: favoritesParams): Favorites {
+  async add(@Param() params: favoritesParams) {
     if (params.type === 'track') {
-      this.favoritesService.add(EntityTypes.TRACKS, params.id);
+      await this.favoritesService.add(EntityTypes.TRACKS, params.id);
     } else if (params.type === 'album') {
-      this.favoritesService.add(EntityTypes.ALBUMS, params.id);
+      await this.favoritesService.add(EntityTypes.ALBUMS, params.id);
     } else if (params.type === 'artist') {
-      this.favoritesService.add(EntityTypes.ARTISTS, params.id);
+      await this.favoritesService.add(EntityTypes.ARTISTS, params.id);
     } else {
       throw new HttpException(
         HttpStatusMessages.NOT_FOUND,
@@ -43,15 +42,24 @@ export class FavoritesController {
 
   @Delete('/:type/:id')
   @HttpCode(204)
-  remove(@Param() params: favoritesParams): void {
+  async remove(@Param() params: favoritesParams): Promise<void> {
     let deleted = false;
 
     if (params.type === 'track') {
-      deleted = this.favoritesService.remove(EntityTypes.TRACKS, params.id);
+      deleted = await this.favoritesService.remove(
+        EntityTypes.TRACKS,
+        params.id,
+      );
     } else if (params.type === 'album') {
-      deleted = this.favoritesService.remove(EntityTypes.ALBUMS, params.id);
+      deleted = await this.favoritesService.remove(
+        EntityTypes.ALBUMS,
+        params.id,
+      );
     } else if (params.type === 'artist') {
-      deleted = this.favoritesService.remove(EntityTypes.ARTISTS, params.id);
+      deleted = await this.favoritesService.remove(
+        EntityTypes.ARTISTS,
+        params.id,
+      );
     } else {
       throw new HttpException(
         HttpStatusMessages.NOT_FOUND,

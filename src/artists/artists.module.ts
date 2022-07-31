@@ -1,11 +1,15 @@
 import { Module } from '@nestjs/common';
 import { ArtistsService } from './artists.service';
 import { ArtistsController } from './artists.controller';
-import { InMemoryDBModule } from '../database/database.module';
 import { FavoritesModule } from '../favorites/favorites.module';
+import {TypeOrmModule} from "@nestjs/typeorm";
+import {ArtistEntity} from "./entities/artist.entity";
 
 @Module({
-  imports: [InMemoryDBModule, FavoritesModule],
+  imports: [
+      FavoritesModule,
+      TypeOrmModule.forFeature([ArtistEntity]),
+  ],
   controllers: [ArtistsController],
   providers: [ArtistsService],
 })

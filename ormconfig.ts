@@ -13,17 +13,6 @@ export default {
     password: process.env.POSTGRES_PASSWORD,
     database: process.env.POSTGRES_DB,
     synchronize: false,
-    entities: [
-        // "src/**/entities/*.entity.{ts,js}",
-    ],
-    migrations: [
-        "migrations/*.ts"
-    ],
-    cli: {
-        // entitiesDir: "src/**/entities/*.ts",
-        migrationsDir: "migrations"
-    },
     migrationsRun: true,
-    autoLoadEntities: true,
-    autoLoadMigrations: true,
+    autoLoadEntities: true
 } as DataSourceOptions;

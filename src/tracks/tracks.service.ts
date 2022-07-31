@@ -1,53 +1,66 @@
-import { Injectable } from '@nestjs/common';
+import {HttpException, HttpStatus, Injectable} from '@nestjs/common';
 import { CreateTrackDto } from './dto/create-track.dto';
 import { UpdateTrackDto } from './dto/update-track.dto';
 import { Track } from './interfaces/track.interface';
 import { EntityService } from '../classes/entity.service';
-import { InMemoryDB } from '../database/in-memory-db';
 import { EntityTypes } from '../enums/entity-types';
-import { randomUUID } from 'crypto';
-import { validateRelatedEntity } from '../classes/helper';
 import { FavoritesService } from '../favorites/favorites.service';
+import {InjectRepository} from "@nestjs/typeorm";
+import {Repository} from "typeorm";
+import {TrackEntity} from "./entities/track.entity";
+import {HttpStatusMessages} from "../enums/http-status-messages";
 
 @Injectable()
 export class TracksService extends EntityService<Track> {
   private readonly favoritesService: FavoritesService;
 
-  constructor(inMemoryDB: InMemoryDB, favoritesService: FavoritesService) {
-    super(EntityTypes.TRACKS, inMemoryDB);
+  constructor(
+      @InjectRepository(TrackEntity) private trackRepository: Repository<TrackEntity>,
+      favoritesService: FavoritesService
+  ) {
+    super(EntityTypes.TRACKS, trackRepository);
     this.favoritesService = favoritesService;
   }
 
-  create(createTrackDto: CreateTrackDto): Track {
-    const { albumId, artistId } = createTrackDto;
+  create(createTrackDto: CreateTrackDto) {
+    try {
+      const track = this.trackRepository.create(createTrackDto);
 
-    validateRelatedEntity(artistId, EntityTypes.ARTISTS, this.inMemoryDB);
-    validateRelatedEntity(albumId, EntityTypes.ALBUMS, this.inMemoryDB);
-
-    return this.inMemoryDB.insert(this.entityType, {
-      id: randomUUID(),
-      name: createTrackDto.name,
-      artistId: artistId ?? null,
-      albumId: albumId ?? null,
-      duration: createTrackDto.duration,
-    });
+      return this.trackRepository.save(track);
+    } catch {
+      throw new HttpException(
+          `Provided entity is invalid`,
+          HttpStatus.BAD_REQUEST,
+      );
+    }
   }
 
-  update(id: string, updateTrackDto: UpdateTrackDto): Track {
-    const track = this.findOne(id);
-    const { artistId, albumId } = updateTrackDto;
+  async update(id: string, updateTrackDto: UpdateTrackDto) {
+    try {
+      const updateResult = await this.trackRepository.update(
+        id,
+        updateTrackDto,
+      );
 
-    validateRelatedEntity(artistId, EntityTypes.ARTISTS, this.inMemoryDB);
-    validateRelatedEntity(albumId, EntityTypes.ALBUMS, this.inMemoryDB);
+      if (updateResult.affected === 1) {
+        return this.findOne(id);
+      }
+    } catch {
+      throw new HttpException(
+          `Provided entity is invalid`,
+          HttpStatus.BAD_REQUEST,
+      );
+    }
 
-    this.inMemoryDB.update(this.entityType, id, updateTrackDto);
-
-    return track;
+    throw new HttpException(
+        HttpStatusMessages.NOT_FOUND,
+        HttpStatus.NOT_FOUND,
+    );
   }
 
-  remove(id: string): void {
-    this.favoritesService.remove(this.entityType, id);
+  async remove(id: string) {
+    await this.favoritesService.remove(this.entityType, id);
 
-    super.remove(id);
+    await super.remove(id);
   }
 }

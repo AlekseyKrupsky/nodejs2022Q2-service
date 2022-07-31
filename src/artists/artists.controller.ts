@@ -19,7 +19,7 @@ export class ArtistsController {
   constructor(private readonly artistsService: ArtistsService) {}
 
   @Post()
-  create(@Body() createArtistDto: CreateArtistDto): Artist {
+  create(@Body() createArtistDto: CreateArtistDto) {
     return this.artistsService.create(createArtistDto);
   }
 
@@ -29,7 +29,7 @@ export class ArtistsController {
   }
 
   @Get(':id')
-  findOne(@Param() params: FindOneParams): Artist {
+  findOne(@Param() params: FindOneParams) {
     return this.artistsService.findOne(params.id);
   }
 
@@ -37,13 +37,13 @@ export class ArtistsController {
   update(
     @Param() params: FindOneParams,
     @Body() updateArtistDto: UpdateArtistDto,
-  ): Artist {
+  ) {
     return this.artistsService.update(params.id, updateArtistDto);
   }
 
   @Delete(':id')
   @HttpCode(204)
-  remove(@Param() params: FindOneParams): void {
+  remove(@Param() params: FindOneParams) {
     return this.artistsService.remove(params.id);
   }
 }
