@@ -25,6 +25,19 @@ docker-compose up
 
 Use -d flag to run as daemon `docker-compose up -d`
 
+## Run migrations
+
+Connect to container (example for linux)
+
+Run `docker ps` to show containers running on you machine
+
+Find nodejs containerId
+
+Run `docker exec -it {containerId} sh`
+
+Run `npm run migration:run`
+
+When this command execution is completed you can run tests or use the app with Postman
 
 ## Testing inside the container
 
@@ -44,18 +57,6 @@ To run only one of all test suites
 
 ```
 npm run test -- <path to suite>
-```
-
-To run all test with authorization
-
-```
-npm run test:auth
-```
-
-To run only specific test suite with authorization
-
-```
-npm run test:auth -- <path to suite>
 ```
 
 ### Auto-fix and format
