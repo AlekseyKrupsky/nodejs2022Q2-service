@@ -6,13 +6,16 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { HttpStatusMessages } from '../enums/http-status-messages';
 import { EntityTypes } from '../enums/entity-types';
 import { EntityService } from '../classes/entity.service';
-import {InjectRepository} from "@nestjs/typeorm";
-import { UserEntity } from "./entities/user.entity";
-import { Repository } from "typeorm";
+import { InjectRepository } from '@nestjs/typeorm';
+import { UserEntity } from './entities/user.entity';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class UsersService extends EntityService<User> {
-  constructor(@InjectRepository(UserEntity) private userRepository: Repository<UserEntity>) {
+  constructor(
+    @InjectRepository(UserEntity)
+    private userRepository: Repository<UserEntity>,
+  ) {
     super(EntityTypes.USERS, userRepository);
   }
 
@@ -38,9 +41,9 @@ export class UsersService extends EntityService<User> {
 
     if (oldPasswordHash === user.password) {
       await this.userRepository.update(id, {
-          password: this.getPasswordHexHash(updatePasswordDto.newPassword),
-          version: user.version + 1,
-          updatedAt: new Date(),
+        password: this.getPasswordHexHash(updatePasswordDto.newPassword),
+        version: user.version + 1,
+        updatedAt: new Date(),
       });
 
       return this.findOne(id);

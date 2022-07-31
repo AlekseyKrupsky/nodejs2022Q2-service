@@ -20,8 +20,8 @@ export class EntityService<EntityType> {
 
     if (item === null) {
       throw new HttpException(
-          HttpStatusMessages.NOT_FOUND,
-          HttpStatus.NOT_FOUND,
+        HttpStatusMessages.NOT_FOUND,
+        HttpStatus.NOT_FOUND,
       );
     }
 
@@ -33,8 +33,8 @@ export class EntityService<EntityType> {
 
     if (result.affected === 0) {
       throw new HttpException(
-          HttpStatusMessages.NOT_FOUND,
-          HttpStatus.NOT_FOUND,
+        HttpStatusMessages.NOT_FOUND,
+        HttpStatus.NOT_FOUND,
       );
     }
   }

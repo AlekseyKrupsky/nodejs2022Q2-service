@@ -1,22 +1,23 @@
-import {HttpException, HttpStatus, Injectable} from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateArtistDto } from './dto/create-artist.dto';
 import { UpdateArtistDto } from './dto/update-artist.dto';
 import { Artist } from './interfaces/artist.interface';
 import { EntityTypes } from '../enums/entity-types';
 import { EntityService } from '../classes/entity.service';
 import { FavoritesService } from '../favorites/favorites.service';
-import { InjectRepository } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
-import { ArtistEntity } from "./entities/artist.entity";
-import {HttpStatusMessages} from "../enums/http-status-messages";
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { ArtistEntity } from './entities/artist.entity';
+import { HttpStatusMessages } from '../enums/http-status-messages';
 
 @Injectable()
 export class ArtistsService extends EntityService<Artist> {
   private readonly favoritesService: FavoritesService;
 
   constructor(
-      @InjectRepository(ArtistEntity) private artistRepository: Repository<ArtistEntity>,
-      favoritesService: FavoritesService
+    @InjectRepository(ArtistEntity)
+    private artistRepository: Repository<ArtistEntity>,
+    favoritesService: FavoritesService,
   ) {
     super(EntityTypes.ARTISTS, artistRepository);
     this.favoritesService = favoritesService;
@@ -30,18 +31,15 @@ export class ArtistsService extends EntityService<Artist> {
 
   async update(id: string, updateArtistDto: UpdateArtistDto) {
     const updateResult = await this.artistRepository.update(
-        id,
-        updateArtistDto,
+      id,
+      updateArtistDto,
     );
 
     if (updateResult.affected === 1) {
       return this.findOne(id);
     }
 
-    throw new HttpException(
-        HttpStatusMessages.NOT_FOUND,
-        HttpStatus.NOT_FOUND,
-    );
+    throw new HttpException(HttpStatusMessages.NOT_FOUND, HttpStatus.NOT_FOUND);
   }
 
   async remove(id: string) {
