@@ -9,12 +9,14 @@ import { EntityService } from '../classes/entity.service';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from './entities/user.entity';
 import { Repository } from 'typeorm';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class UsersService extends EntityService<User> {
   constructor(
     @InjectRepository(UserEntity)
     private userRepository: Repository<UserEntity>,
+    private jwtTokenService: JwtService
   ) {
     super(EntityTypes.USERS, userRepository);
   }
@@ -30,6 +32,41 @@ export class UsersService extends EntityService<User> {
     });
 
     return this.userRepository.save(createUser);
+  }
+
+  async login(loginData: CreateUserDto) {
+    const passwordHash: string = this.getPasswordHexHash(
+        loginData.password,
+    );
+
+    const user = await this.userRepository.findOneBy({
+      login: loginData.login,
+      password: passwordHash
+    });
+
+    if (user === null) {
+      throw new HttpException(
+        HttpStatusMessages.FORBIDDEN,
+        HttpStatus.FORBIDDEN,
+      );
+    }
+
+    const accessToken = this.createJWTToken(
+      user,
+      +process.env.TOKEN_EXPIRE_TIME,
+      process.env.JWT_SECRET_KEY
+    );
+
+    const refreshToken = this.createJWTToken(
+        user,
+        +process.env.TOKEN_REFRESH_EXPIRE_TIME,
+        process.env.JWT_SECRET_REFRESH_KEY
+    );
+
+    return {
+      accessToken,
+      refreshToken
+    };
   }
 
   async update(id: string, updatePasswordDto: UpdatePasswordDto) {
@@ -52,9 +89,20 @@ export class UsersService extends EntityService<User> {
     throw new HttpException(HttpStatusMessages.FORBIDDEN, HttpStatus.FORBIDDEN);
   }
 
-  getPasswordHexHash(password: string): string {
+  private getPasswordHexHash(password: string): string {
     const hash = createHash('sha256');
 
     return hash.update(password).digest('hex');
+  }
+
+  private createJWTToken(
+    user: UserEntity,
+    expiresIn: number,
+    secret: string,
+  ): string {
+    const expirationTime = +Date.now() + expiresIn * 1000;
+    const payload = { userId: user.id, login: user.login, exp: expirationTime };
+
+    return this.jwtTokenService.sign(payload, { secret: secret });
   }
 }
