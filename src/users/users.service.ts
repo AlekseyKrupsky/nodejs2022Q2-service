@@ -12,7 +12,7 @@ import { Repository } from 'typeorm';
 import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
-export class UsersService extends EntityService<User> {
+export class UsersService extends EntityService<UserEntity> {
   constructor(
     @InjectRepository(UserEntity)
     private userRepository: Repository<UserEntity>,
@@ -67,6 +67,40 @@ export class UsersService extends EntityService<User> {
       accessToken,
       refreshToken
     };
+  }
+
+  async refresh(refreshToken: string) {
+    try {
+      const { userId, exp } = this.jwtTokenService.verify(refreshToken, { secret: process.env.JWT_SECRET_REFRESH_KEY });
+
+      if (exp < +Date.now()) {
+        throw new Error('Token expired');
+      }
+
+      const user = await this.findOne(userId);
+
+      const accessToken = this.createJWTToken(
+          user,
+          +process.env.TOKEN_EXPIRE_TIME,
+          process.env.JWT_SECRET_KEY
+      );
+
+      const newRefreshToken = this.createJWTToken(
+          user,
+          +process.env.TOKEN_REFRESH_EXPIRE_TIME,
+          process.env.JWT_SECRET_REFRESH_KEY
+      );
+
+      return {
+        accessToken,
+        newRefreshToken,
+      };
+    } catch {
+      throw new HttpException(
+        'Refresh token is invalid or expired',
+        HttpStatus.FORBIDDEN,
+      );
+    }
   }
 
   async update(id: string, updatePasswordDto: UpdatePasswordDto) {
