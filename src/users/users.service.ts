@@ -1,5 +1,4 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { User } from './interfaces/user.interface';
 import { UpdatePasswordDto } from './dto/update-user.dto';
 import { createHash } from 'crypto';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -16,7 +15,7 @@ export class UsersService extends EntityService<UserEntity> {
   constructor(
     @InjectRepository(UserEntity)
     private userRepository: Repository<UserEntity>,
-    private jwtTokenService: JwtService
+    private jwtTokenService: JwtService,
   ) {
     super(EntityTypes.USERS, userRepository);
   }
@@ -35,13 +34,11 @@ export class UsersService extends EntityService<UserEntity> {
   }
 
   async login(loginData: CreateUserDto) {
-    const passwordHash: string = this.getPasswordHexHash(
-        loginData.password,
-    );
+    const passwordHash: string = this.getPasswordHexHash(loginData.password);
 
     const user = await this.userRepository.findOneBy({
       login: loginData.login,
-      password: passwordHash
+      password: passwordHash,
     });
 
     if (user === null) {
@@ -54,24 +51,26 @@ export class UsersService extends EntityService<UserEntity> {
     const accessToken = this.createJWTToken(
       user,
       +process.env.TOKEN_EXPIRE_TIME,
-      process.env.JWT_SECRET_KEY
+      process.env.JWT_SECRET_KEY,
     );
 
     const refreshToken = this.createJWTToken(
-        user,
-        +process.env.TOKEN_REFRESH_EXPIRE_TIME,
-        process.env.JWT_SECRET_REFRESH_KEY
+      user,
+      +process.env.TOKEN_REFRESH_EXPIRE_TIME,
+      process.env.JWT_SECRET_REFRESH_KEY,
     );
 
     return {
       accessToken,
-      refreshToken
+      refreshToken,
     };
   }
 
   async refresh(refreshToken: string) {
     try {
-      const { userId, exp } = this.jwtTokenService.verify(refreshToken, { secret: process.env.JWT_SECRET_REFRESH_KEY });
+      const { userId, exp } = this.jwtTokenService.verify(refreshToken, {
+        secret: process.env.JWT_SECRET_REFRESH_KEY,
+      });
 
       if (exp < +Date.now()) {
         throw new Error('Token expired');
@@ -80,15 +79,15 @@ export class UsersService extends EntityService<UserEntity> {
       const user = await this.findOne(userId);
 
       const accessToken = this.createJWTToken(
-          user,
-          +process.env.TOKEN_EXPIRE_TIME,
-          process.env.JWT_SECRET_KEY
+        user,
+        +process.env.TOKEN_EXPIRE_TIME,
+        process.env.JWT_SECRET_KEY,
       );
 
       const newRefreshToken = this.createJWTToken(
-          user,
-          +process.env.TOKEN_REFRESH_EXPIRE_TIME,
-          process.env.JWT_SECRET_REFRESH_KEY
+        user,
+        +process.env.TOKEN_REFRESH_EXPIRE_TIME,
+        process.env.JWT_SECRET_REFRESH_KEY,
       );
 
       return {

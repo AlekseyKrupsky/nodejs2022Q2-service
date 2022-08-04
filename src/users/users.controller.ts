@@ -14,7 +14,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdatePasswordDto } from './dto/update-user.dto';
 import { FindOneParams } from '../classes/params/findOneParams';
 import { PasswordInterceptor } from './password.interceptor';
-import {RefreshTokenDto} from "./dto/refresh-token.dto";
+import { RefreshTokenDto } from './dto/refresh-token.dto';
 
 @Controller()
 @UseInterceptors(new PasswordInterceptor())

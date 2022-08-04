@@ -6,8 +6,8 @@ import { UsersModule } from './users/users.module';
 import { FavoritesModule } from './favorites/favorites.module';
 import Ormconfig from './../ormconfig';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import {APP_INTERCEPTOR} from "@nestjs/core";
-import {AuthInterceptor} from "./interceptors/auth.interceptor";
+import { APP_INTERCEPTOR } from '@nestjs/core';
+import { AuthInterceptor } from './interceptors/auth.interceptor';
 
 @Module({
   imports: [
