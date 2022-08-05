@@ -8,7 +8,7 @@ import {
 } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { JwtService } from '@nestjs/jwt';
-import {HttpStatusMessages} from "../enums/http-status-messages";
+import { HttpStatusMessages } from '../enums/http-status-messages';
 
 const IGNORE_AUTH_ROUTES = [
   '/auth/refresh',

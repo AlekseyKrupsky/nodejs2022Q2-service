@@ -16,7 +16,7 @@ import { UpdatePasswordDto } from './dto/update-user.dto';
 import { FindOneParams } from '../classes/params/findOneParams';
 import { PasswordInterceptor } from './password.interceptor';
 import { RefreshTokenDto } from './dto/refresh-token.dto';
-import {HttpExceptionFilter} from "./http-exception.filter";
+import { HttpExceptionFilter } from './http-exception.filter';
 
 @Controller()
 @UseInterceptors(new PasswordInterceptor())
