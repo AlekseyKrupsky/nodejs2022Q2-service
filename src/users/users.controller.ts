@@ -8,6 +8,7 @@ import {
   UseInterceptors,
   Delete,
   HttpCode,
+  UseFilters,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -15,6 +16,7 @@ import { UpdatePasswordDto } from './dto/update-user.dto';
 import { FindOneParams } from '../classes/params/findOneParams';
 import { PasswordInterceptor } from './password.interceptor';
 import { RefreshTokenDto } from './dto/refresh-token.dto';
+import {HttpExceptionFilter} from "./http-exception.filter";
 
 @Controller()
 @UseInterceptors(new PasswordInterceptor())
@@ -32,6 +34,7 @@ export class UsersController {
     return this.usersService.login(loginData);
   }
 
+  @UseFilters(new HttpExceptionFilter())
   @Post('auth/refresh')
   @HttpCode(200)
   refresh(@Body() refreshTokenData: RefreshTokenDto) {

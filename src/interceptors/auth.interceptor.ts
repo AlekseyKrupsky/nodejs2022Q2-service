@@ -8,6 +8,7 @@ import {
 } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { JwtService } from '@nestjs/jwt';
+import {HttpStatusMessages} from "../enums/http-status-messages";
 
 const IGNORE_AUTH_ROUTES = [
   '/auth/refresh',
@@ -37,8 +38,8 @@ export class AuthInterceptor implements NestInterceptor {
 
     if (pathRequireAuth && invalidToken) {
       throw new HttpException(
-        'Access token is invalid or expired',
-        HttpStatus.FORBIDDEN,
+        HttpStatusMessages.UNAUTHORIZED,
+        HttpStatus.UNAUTHORIZED,
       );
     }
 

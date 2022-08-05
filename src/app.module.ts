@@ -6,8 +6,7 @@ import { UsersModule } from './users/users.module';
 import { FavoritesModule } from './favorites/favorites.module';
 import Ormconfig from './../ormconfig';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { APP_INTERCEPTOR } from '@nestjs/core';
-import { AuthInterceptor } from './interceptors/auth.interceptor';
+import {AuthModule} from "./auth/auth.module";
 
 @Module({
   imports: [
@@ -16,13 +15,8 @@ import { AuthInterceptor } from './interceptors/auth.interceptor';
     AlbumsModule,
     UsersModule,
     FavoritesModule,
+    AuthModule,
     TypeOrmModule.forRoot(Ormconfig),
-  ],
-  providers: [
-    {
-      provide: APP_INTERCEPTOR,
-      useClass: AuthInterceptor,
-    },
   ],
 })
 export class AppModule {}
