@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { APP_INTERCEPTOR } from '@nestjs/core';
-import { AuthInterceptor } from '../interceptors/auth.interceptor';
+import { AuthInterceptor } from './auth.interceptor';
 
 @Module({
   providers: [
