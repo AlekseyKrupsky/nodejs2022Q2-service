@@ -6,6 +6,7 @@ cd /usr/src/app
 
 npm audit
 
-sleep 3
+sleep 30000
 
-exec npm run start:dev
+#exec npm run start:dev
+exec ls
