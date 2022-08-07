@@ -2,6 +2,8 @@ import { MigrationInterface, QueryRunner } from "typeorm"
 
 export class createArtistsTable1659087790070 implements MigrationInterface {
     public async up(queryRunner: QueryRunner): Promise<void> {
+        await queryRunner.query(`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`);
+
         await queryRunner.query(`CREATE TABLE IF NOT EXISTS artists
                                  (
                                      id UUID DEFAULT uuid_generate_v4(),

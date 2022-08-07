@@ -86,3 +86,15 @@ npm run format
 Press <kbd>F5</kbd> to debug.
 
 For more information, visit: https://code.visualstudio.com/docs/editor/debugging
+
+## Logging
+
+LOGGING_LEVEL - set what kind of messages will be logged
+0 - info messages (e.g. when new log file was created)
+1 - log message (success requests) and logs from level 0
+2 - error messages (errors in code, bad requests) and logs from levels 0, 1
+
+MAX_FILE_SIZE_KB - set max logs file size in KB
+
+LOG_TO_CONSOLE - additional logging in console. Available values true and false.
+Logging in file doesn't depend on setting above.
