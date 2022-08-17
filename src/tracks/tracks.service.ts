@@ -1,7 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateTrackDto } from './dto/create-track.dto';
 import { UpdateTrackDto } from './dto/update-track.dto';
-import { Track } from './interfaces/track.interface';
 import { EntityService } from '../classes/entity.service';
 import { EntityTypes } from '../enums/entity-types';
 import { FavoritesService } from '../favorites/favorites.service';
@@ -11,7 +10,7 @@ import { TrackEntity } from './entities/track.entity';
 import { HttpStatusMessages } from '../enums/http-status-messages';
 
 @Injectable()
-export class TracksService extends EntityService<Track> {
+export class TracksService extends EntityService<TrackEntity> {
   private readonly favoritesService: FavoritesService;
 
   constructor(
@@ -23,7 +22,7 @@ export class TracksService extends EntityService<Track> {
     this.favoritesService = favoritesService;
   }
 
-  create(createTrackDto: CreateTrackDto) {
+  create(createTrackDto: CreateTrackDto): Promise<TrackEntity> {
     try {
       const track = this.trackRepository.create(createTrackDto);
 
@@ -36,7 +35,10 @@ export class TracksService extends EntityService<Track> {
     }
   }
 
-  async update(id: string, updateTrackDto: UpdateTrackDto) {
+  async update(
+    id: string,
+    updateTrackDto: UpdateTrackDto,
+  ): Promise<TrackEntity> {
     try {
       const updateResult = await this.trackRepository.update(
         id,
@@ -56,7 +58,7 @@ export class TracksService extends EntityService<Track> {
     throw new HttpException(HttpStatusMessages.NOT_FOUND, HttpStatus.NOT_FOUND);
   }
 
-  async remove(id: string) {
+  async remove(id: string): Promise<void> {
     await this.favoritesService.remove(this.entityType, id);
 
     await super.remove(id);

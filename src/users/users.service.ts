@@ -9,6 +9,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from './entities/user.entity';
 import { Repository } from 'typeorm';
 import { JwtService } from '@nestjs/jwt';
+import { LoginResponse } from './types/login-response.type';
+import { RefreshResponse } from './types/refresh-response.type';
 
 @Injectable()
 export class UsersService extends EntityService<UserEntity> {
@@ -20,7 +22,7 @@ export class UsersService extends EntityService<UserEntity> {
     super(EntityTypes.USERS, userRepository);
   }
 
-  create(createUserDto: CreateUserDto) {
+  create(createUserDto: CreateUserDto): Promise<UserEntity> {
     const passwordHash: string = this.getPasswordHexHash(
       createUserDto.password,
     );
@@ -33,7 +35,7 @@ export class UsersService extends EntityService<UserEntity> {
     return this.userRepository.save(createUser);
   }
 
-  async login(loginData: CreateUserDto) {
+  async login(loginData: CreateUserDto): Promise<LoginResponse> {
     const passwordHash: string = this.getPasswordHexHash(loginData.password);
 
     const user = await this.userRepository.findOneBy({
@@ -66,7 +68,7 @@ export class UsersService extends EntityService<UserEntity> {
     };
   }
 
-  async refresh(refreshToken: string) {
+  async refresh(refreshToken: string): Promise<RefreshResponse> {
     try {
       const { userId, exp } = this.jwtTokenService.verify(refreshToken, {
         secret: process.env.JWT_SECRET_REFRESH_KEY,
@@ -102,7 +104,10 @@ export class UsersService extends EntityService<UserEntity> {
     }
   }
 
-  async update(id: string, updatePasswordDto: UpdatePasswordDto) {
+  async update(
+    id: string,
+    updatePasswordDto: UpdatePasswordDto,
+  ): Promise<UserEntity> {
     const user = await this.findOne(id);
 
     const oldPasswordHash: string = this.getPasswordHexHash(

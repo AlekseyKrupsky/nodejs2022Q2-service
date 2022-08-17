@@ -21,7 +21,8 @@
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "migration:create": "ts-node -r tsconfig-paths/register ./node_modules/.bin/typeorm migration:create",
     "migration:run": "ts-node -r tsconfig-paths/register ./node_modules/.bin/typeorm migration:run -d data-source.ts",
-    "migration:revert": "ts-node -r tsconfig-paths/register ./node_modules/.bin/typeorm migration:revert -d data-source.ts"
+    "migration:revert": "ts-node -r tsconfig-paths/register ./node_modules/.bin/typeorm migration:revert -d data-source.ts",
+    "migration:revert:all": "for i in {1..5}; do npm run migration:revert; done"
   },
   "dependencies": {
     "@nestjs/common": "^8.0.0",

@@ -1,7 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateAlbumDto } from './dto/create-album.dto';
 import { UpdateAlbumDto } from './dto/update-album.dto';
-import { Album } from './interfaces/album.interface';
 import { EntityTypes } from '../enums/entity-types';
 import { EntityService } from '../classes/entity.service';
 import { FavoritesService } from '../favorites/favorites.service';
@@ -11,7 +10,7 @@ import { AlbumEntity } from './entities/album.entity';
 import { HttpStatusMessages } from '../enums/http-status-messages';
 
 @Injectable()
-export class AlbumsService extends EntityService<Album> {
+export class AlbumsService extends EntityService<AlbumEntity> {
   private readonly favoritesService: FavoritesService;
 
   constructor(
@@ -23,7 +22,7 @@ export class AlbumsService extends EntityService<Album> {
     this.favoritesService = favoritesService;
   }
 
-  create(createAlbumDto: CreateAlbumDto) {
+  create(createAlbumDto: CreateAlbumDto): Promise<AlbumEntity> {
     try {
       const album = this.albumRepository.create(createAlbumDto);
 
@@ -36,7 +35,10 @@ export class AlbumsService extends EntityService<Album> {
     }
   }
 
-  async update(id: string, updateAlbumDto: UpdateAlbumDto) {
+  async update(
+    id: string,
+    updateAlbumDto: UpdateAlbumDto,
+  ): Promise<AlbumEntity> {
     try {
       const updateResult = await this.albumRepository.update(
         id,

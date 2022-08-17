@@ -28,7 +28,7 @@ export class EntityService<EntityType> {
     return item;
   }
 
-  async remove(id: string) {
+  async remove(id: string): Promise<void> {
     const result = await this.repository.delete(id);
 
     if (result.affected === 0) {

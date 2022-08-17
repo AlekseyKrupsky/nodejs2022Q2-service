@@ -1,7 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateArtistDto } from './dto/create-artist.dto';
 import { UpdateArtistDto } from './dto/update-artist.dto';
-import { Artist } from './interfaces/artist.interface';
 import { EntityTypes } from '../enums/entity-types';
 import { EntityService } from '../classes/entity.service';
 import { FavoritesService } from '../favorites/favorites.service';
@@ -11,7 +10,7 @@ import { ArtistEntity } from './entities/artist.entity';
 import { HttpStatusMessages } from '../enums/http-status-messages';
 
 @Injectable()
-export class ArtistsService extends EntityService<Artist> {
+export class ArtistsService extends EntityService<ArtistEntity> {
   private readonly favoritesService: FavoritesService;
 
   constructor(
@@ -23,13 +22,16 @@ export class ArtistsService extends EntityService<Artist> {
     this.favoritesService = favoritesService;
   }
 
-  create(createArtistDto: CreateArtistDto) {
+  create(createArtistDto: CreateArtistDto): Promise<ArtistEntity> {
     const artist = this.artistRepository.create(createArtistDto);
 
     return this.artistRepository.save(artist);
   }
 
-  async update(id: string, updateArtistDto: UpdateArtistDto) {
+  async update(
+    id: string,
+    updateArtistDto: UpdateArtistDto,
+  ): Promise<ArtistEntity> {
     const updateResult = await this.artistRepository.update(
       id,
       updateArtistDto,
@@ -42,7 +44,7 @@ export class ArtistsService extends EntityService<Artist> {
     throw new HttpException(HttpStatusMessages.NOT_FOUND, HttpStatus.NOT_FOUND);
   }
 
-  async remove(id: string) {
+  async remove(id: string): Promise<void> {
     await this.favoritesService.remove(this.entityType, id);
 
     await super.remove(id);
