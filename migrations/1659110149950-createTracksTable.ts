@@ -9,7 +9,7 @@ export class createTracksTable1659110149950 implements MigrationInterface {
                                      id UUID DEFAULT uuid_generate_v4(),
                                      name VARCHAR(255) NOT NULL,
                                      "albumId" UUID NULL DEFAULT NULL,
-                                    "artistId" UUID NULL DEFAULT NULL,
+                                     "artistId" UUID NULL DEFAULT NULL,
                                      duration SMALLINT NOT NULL,
                                      CONSTRAINT table_tracks_id_pk PRIMARY KEY (id),    
                                      CONSTRAINT artists_id_fk FOREIGN KEY ("artistId") REFERENCES public.artists(id) ON DELETE SET NULL,

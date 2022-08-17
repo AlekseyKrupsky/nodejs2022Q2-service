@@ -25,10 +25,6 @@ export class GlobalExceptionFilter implements ExceptionFilter {
       status = exception.getStatus();
     }
 
-    if (status === HttpStatus.BAD_REQUEST) {
-      status = HttpStatus.UNAUTHORIZED;
-    }
-
     const query = JSON.stringify(request.query);
     const body = JSON.stringify(request.body);
 
