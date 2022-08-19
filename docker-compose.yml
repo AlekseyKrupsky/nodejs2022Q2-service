@@ -31,7 +31,7 @@ services:
     ports:
       - ${POSTGRES_PORT}:${POSTGRES_DEFAULT_PORT}
     volumes:
-      - ./postgres:/var/lib/postgresql
+      - ./postgres:/var/lib/postgresql/data
     networks:
       - common
 
