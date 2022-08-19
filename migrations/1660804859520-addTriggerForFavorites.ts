@@ -1,8 +1,8 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
 export class addTriggerForFavorites1660804859520 implements MigrationInterface {
-    public async up(queryRunner: QueryRunner): Promise<void> {
-        await queryRunner.query(`
+  public async up(queryRunner: QueryRunner): Promise<void> {
+    await queryRunner.query(`
             CREATE OR REPLACE FUNCTION check_foreign_id_exists() RETURNS TRIGGER LANGUAGE PLPGSQL AS
             $$
             DECLARE cnt INT;
@@ -29,16 +29,20 @@ export class addTriggerForFavorites1660804859520 implements MigrationInterface {
             $$
         `);
 
-        await queryRunner.query(`
+    await queryRunner.query(`
             CREATE TRIGGER check_favourite_on_insert 
             BEFORE INSERT ON favorites
             FOR EACH ROW
             EXECUTE PROCEDURE check_foreign_id_exists();
         `);
-    }
+  }
 
-    public async down(queryRunner: QueryRunner): Promise<void> {
-        await queryRunner.query(`DROP TRIGGER IF EXISTS check_favourite_on_insert ON favorites`);
-        await queryRunner.query(`DROP FUNCTION IF EXISTS check_foreign_id_exists()`);
-    }
+  public async down(queryRunner: QueryRunner): Promise<void> {
+    await queryRunner.query(
+      `DROP TRIGGER IF EXISTS check_favourite_on_insert ON favorites`,
+    );
+    await queryRunner.query(
+      `DROP FUNCTION IF EXISTS check_foreign_id_exists()`,
+    );
+  }
 }

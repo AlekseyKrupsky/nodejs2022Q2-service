@@ -1,10 +1,10 @@
-import { MigrationInterface, QueryRunner } from "typeorm"
+import { MigrationInterface, QueryRunner } from 'typeorm';
 
 export class createTracksTable1659110149950 implements MigrationInterface {
-    public async up(queryRunner: QueryRunner): Promise<void> {
-        await queryRunner.query(`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`);
+  public async up(queryRunner: QueryRunner): Promise<void> {
+    await queryRunner.query(`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`);
 
-        await queryRunner.query(`CREATE TABLE IF NOT EXISTS tracks
+    await queryRunner.query(`CREATE TABLE IF NOT EXISTS tracks
                                  (
                                      id UUID DEFAULT uuid_generate_v4(),
                                      name VARCHAR(255) NOT NULL,
@@ -16,9 +16,9 @@ export class createTracksTable1659110149950 implements MigrationInterface {
                                      CONSTRAINT albums_id_fk FOREIGN KEY ("albumId") REFERENCES public.albums(id) ON DELETE SET NULL
                                  )
         `);
-    }
+  }
 
-    public async down(queryRunner: QueryRunner): Promise<void> {
-        await queryRunner.query(`DROP TABLE IF EXISTS tracks`);
-    }
+  public async down(queryRunner: QueryRunner): Promise<void> {
+    await queryRunner.query(`DROP TABLE IF EXISTS tracks`);
+  }
 }

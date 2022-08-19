@@ -1,10 +1,10 @@
-import { MigrationInterface, QueryRunner } from "typeorm"
+import { MigrationInterface, QueryRunner } from 'typeorm';
 
 export class createUsersTable1659078114121 implements MigrationInterface {
-    public async up(queryRunner: QueryRunner): Promise<void> {
-        await queryRunner.query(`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`);
+  public async up(queryRunner: QueryRunner): Promise<void> {
+    await queryRunner.query(`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`);
 
-        await queryRunner.query(`CREATE TABLE IF NOT EXISTS users
+    await queryRunner.query(`CREATE TABLE IF NOT EXISTS users
                                  (
                                      id UUID DEFAULT uuid_generate_v4(),
                                      login     VARCHAR(255) NOT NULL,
@@ -15,9 +15,9 @@ export class createUsersTable1659078114121 implements MigrationInterface {
                                      CONSTRAINT table_users_id_pk PRIMARY KEY (id)
                                  )
         `);
-    }
+  }
 
-    public async down(queryRunner: QueryRunner): Promise<void> {
-        await queryRunner.query(`DROP TABLE IF EXISTS users`);
-    }
+  public async down(queryRunner: QueryRunner): Promise<void> {
+    await queryRunner.query(`DROP TABLE IF EXISTS users`);
+  }
 }

@@ -30,25 +30,37 @@ const TRACKS_TABLE = 'tracks';
 const ALBUMS_TABLE = 'albums';
 
 export class addTriggersForEntities1660831354845 implements MigrationInterface {
-    public async up(queryRunner: QueryRunner): Promise<void> {
-        await queryRunner.query(functionTemplate.replaceAll('%s', ARTISTS_TABLE));
-        await queryRunner.query(triggerTemplate.replaceAll('%s', ARTISTS_TABLE));
+  public async up(queryRunner: QueryRunner): Promise<void> {
+    await queryRunner.query(functionTemplate.replaceAll('%s', ARTISTS_TABLE));
+    await queryRunner.query(triggerTemplate.replaceAll('%s', ARTISTS_TABLE));
 
-        await queryRunner.query(functionTemplate.replaceAll('%s', TRACKS_TABLE));
-        await queryRunner.query(triggerTemplate.replaceAll('%s', TRACKS_TABLE));
+    await queryRunner.query(functionTemplate.replaceAll('%s', TRACKS_TABLE));
+    await queryRunner.query(triggerTemplate.replaceAll('%s', TRACKS_TABLE));
 
-        await queryRunner.query(functionTemplate.replaceAll('%s', ALBUMS_TABLE));
-        await queryRunner.query(triggerTemplate.replaceAll('%s', ALBUMS_TABLE));
-    }
+    await queryRunner.query(functionTemplate.replaceAll('%s', ALBUMS_TABLE));
+    await queryRunner.query(triggerTemplate.replaceAll('%s', ALBUMS_TABLE));
+  }
 
-    public async down(queryRunner: QueryRunner): Promise<void> {
-        await queryRunner.query(functionRevertTemplate.replaceAll('%s', ARTISTS_TABLE));
-        await queryRunner.query(triggerRevertTemplate.replaceAll('%s', ARTISTS_TABLE));
+  public async down(queryRunner: QueryRunner): Promise<void> {
+    await queryRunner.query(
+      functionRevertTemplate.replaceAll('%s', ARTISTS_TABLE),
+    );
+    await queryRunner.query(
+      triggerRevertTemplate.replaceAll('%s', ARTISTS_TABLE),
+    );
 
-        await queryRunner.query(functionRevertTemplate.replaceAll('%s', TRACKS_TABLE));
-        await queryRunner.query(triggerRevertTemplate.replaceAll('%s', TRACKS_TABLE));
+    await queryRunner.query(
+      functionRevertTemplate.replaceAll('%s', TRACKS_TABLE),
+    );
+    await queryRunner.query(
+      triggerRevertTemplate.replaceAll('%s', TRACKS_TABLE),
+    );
 
-        await queryRunner.query(functionRevertTemplate.replaceAll('%s', ALBUMS_TABLE));
-        await queryRunner.query(triggerRevertTemplate.replaceAll('%s', ALBUMS_TABLE));
-    }
+    await queryRunner.query(
+      functionRevertTemplate.replaceAll('%s', ALBUMS_TABLE),
+    );
+    await queryRunner.query(
+      triggerRevertTemplate.replaceAll('%s', ALBUMS_TABLE),
+    );
+  }
 }
