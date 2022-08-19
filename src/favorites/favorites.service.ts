@@ -8,6 +8,7 @@ import { FavoriteEntity } from './entities/favorite.entity';
 import { AlbumEntity } from '../albums/entities/album.entity';
 import { TrackEntity } from '../tracks/entities/track.entity';
 import { EntityTypes } from '../enums/entity-types';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class FavoritesService {
@@ -20,6 +21,7 @@ export class FavoritesService {
     private artistRepository: Repository<ArtistEntity>,
     @InjectRepository(TrackEntity)
     private trackRepository: Repository<TrackEntity>,
+    private jwtTokenService: JwtService,
   ) {}
 
   async findAll() {
@@ -54,40 +56,42 @@ export class FavoritesService {
     return favorites;
   }
 
-  async add(type: EntityTypeUnion, id: string) {
-    let repository;
+  async add(type: EntityTypeUnion, id: string, authHeader: string) {
+    const jwtToken = authHeader.replace('Bearer ', '');
 
-    switch (type) {
-      case EntityTypes.ARTISTS:
-        repository = this.artistRepository;
-        break;
-      case EntityTypes.ALBUMS:
-        repository = this.albumRepository;
-        break;
-      case EntityTypes.TRACKS:
-        repository = this.trackRepository;
-        break;
-    }
+    const { userId } = this.jwtTokenService.verify(jwtToken, {
+      secret: process.env.JWT_SECRET_KEY,
+    });
 
-    const item = await repository.findOneBy({ id: id });
+    const favorite = this.favoriteRepository.create({
+      userId: userId,
+      favoriteItemId: id,
+      favoriteType: type,
+    });
 
-    if (item === null) {
+    try {
+      await this.favoriteRepository.save(favorite);
+    } catch {
       throw new HttpException(
         HttpStatusMessages.UNPROCESSABLE_ENTITY,
         HttpStatus.UNPROCESSABLE_ENTITY,
       );
     }
-
-    const favorite = this.favoriteRepository.create({
-      favoriteItemId: id,
-      favoriteType: type,
-    });
-
-    await this.favoriteRepository.save(favorite);
   }
 
-  async remove(type: EntityTypeUnion, id: string): Promise<boolean> {
+  async remove(
+    type: EntityTypeUnion,
+    id: string,
+    authHeader: string,
+  ): Promise<boolean> {
+    const jwtToken = authHeader.replace('Bearer ', '');
+
+    const { userId } = this.jwtTokenService.verify(jwtToken, {
+      secret: process.env.JWT_SECRET_KEY,
+    });
+
     const result = await this.favoriteRepository.delete({
+      userId: userId,
       favoriteType: type,
       favoriteItemId: id,
     });

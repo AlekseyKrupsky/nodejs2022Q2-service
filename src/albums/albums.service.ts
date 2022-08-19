@@ -59,8 +59,6 @@ export class AlbumsService extends EntityService<AlbumEntity> {
   }
 
   async remove(id: string) {
-    await this.favoritesService.remove(this.entityType, id);
-
     await super.remove(id);
   }
 }

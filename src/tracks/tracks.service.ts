@@ -59,8 +59,6 @@ export class TracksService extends EntityService<TrackEntity> {
   }
 
   async remove(id: string): Promise<void> {
-    await this.favoritesService.remove(this.entityType, id);
-
     await super.remove(id);
   }
 }

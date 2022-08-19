@@ -45,8 +45,6 @@ export class ArtistsService extends EntityService<ArtistEntity> {
   }
 
   async remove(id: string): Promise<void> {
-    await this.favoritesService.remove(this.entityType, id);
-
     await super.remove(id);
   }
 }

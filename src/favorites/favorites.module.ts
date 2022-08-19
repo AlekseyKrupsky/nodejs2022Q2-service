@@ -6,6 +6,7 @@ import { TrackEntity } from '../tracks/entities/track.entity';
 import { AlbumEntity } from '../albums/entities/album.entity';
 import { ArtistEntity } from '../artists/entities/artist.entity';
 import { FavoriteEntity } from './entities/favorite.entity';
+import { JwtModule } from '@nestjs/jwt';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { FavoriteEntity } from './entities/favorite.entity';
     TypeOrmModule.forFeature([ArtistEntity]),
     TypeOrmModule.forFeature([TrackEntity]),
     TypeOrmModule.forFeature([FavoriteEntity]),
+    JwtModule,
   ],
   controllers: [FavoritesController],
   providers: [FavoritesService],

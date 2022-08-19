@@ -8,9 +8,11 @@ export class createFavoritesTable1659110676012 implements MigrationInterface {
 
         await queryRunner.query(`CREATE TABLE IF NOT EXISTS favorites
                                  (
+                                     "userId" UUID NOT NULL,
                                      "favoriteItemId" UUID NOT NULL,
                                      "favoriteType" favorite NOT NULL,
-                                     CONSTRAINT table_favorites_pk PRIMARY KEY ("favoriteItemId", "favoriteType")
+                                     CONSTRAINT users_id_fk FOREIGN KEY ("userId") REFERENCES public.users(id) ON DELETE CASCADE,
+                                     CONSTRAINT table_favorites_pk PRIMARY KEY ("userId", "favoriteItemId", "favoriteType")
                                  )
         `);
     }
